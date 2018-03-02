@@ -6,31 +6,35 @@ import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
-    private CurrentEvents mCurrentEvents;
+   // private CurrentEvents mCurrentEvents;
 
-
+    private ListView mlistView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mlistView = (ListView) findViewById(R.id.list_view);
 
         String clientID = "OTY3NjUxOHwxNTEwOTU0MjA2LjE0";
         //double latitude = 37.8267;
@@ -54,17 +58,26 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Response response) throws IOException {
                     try {
-                        String jsonData = response.body().string();
+                        final String jsonData = response.body().string();
                         Log.v(TAG, jsonData);
                         if (response.isSuccessful()) {
-                            if (response.isSuccessful()) {
-                                mCurrentEvents = getCurrentDetails(jsonData);
-                            }
+                           runOnUiThread(new Runnable() {
+                               @Override
+                               public void run() {
+                                   try{
+                                       getCurrentDetails(jsonData);
+                                   } catch (JSONException e) {
+                                       e.printStackTrace();
+                                   }
+                               }
+                           });
+
+
                         } else {
                             alertUserAboutError();
                         }
                     }
-                    catch (JSONException e){
+                    catch (IOException e){
                         Log.e(TAG, "Exception caught: ", e);
                     }
                 }
@@ -78,25 +91,65 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Main UI is running!");
     }
 
-    private CurrentEvents getCurrentDetails(String jsonData) throws JSONException {
+    private void getCurrentDetails(String jsonData) throws JSONException {
         JSONObject funevents = new JSONObject(jsonData);
+
+        JSONArray eventsJSON= funevents.getJSONArray("events");
+        CurrentEvents[] currentevents = new CurrentEvents[eventsJSON.length()];
+
+        String[] titleArray = new String[eventsJSON.length()];
+
+        for (int i = 0; i < eventsJSON.length(); i++) {
+            JSONObject currenteventJSON = eventsJSON.getJSONObject(i);
+            //get title
+            String title = currenteventJSON.getString("title");
+
+            //get image (from performers)
+            ArrayList<String> performers = new ArrayList<>();
+            JSONArray performersJSON = currenteventJSON.getJSONArray("performers");
+            for (int y = 0; y < performersJSON.length(); y++) {
+                performers.add(performersJSON.getJSONObject(y).getString("image"));
+            }
+
+            //get address
+            String address = (String)currenteventJSON.getJSONObject("venue").getString("address");
+            //get extended_address
+            String extended_address = (String)currenteventJSON.getJSONObject("venue").getString("extended_address");
+            //get type (from events)
+            String type = currenteventJSON.getString("type");
+
+            String image = String.valueOf(performers);
+            //String image = currenteventJSON.getString("image");
+
+
+            Log.d(TAG, title); //title of event
+
+            //Log.d(TAG, String.valueOf(performers));
+
+            Log.d(TAG, image); //image url Log.d(TAG, String.valueOf(performers));
+            Log.d(TAG, address); //first part of the address (the numbers)
+            Log.d(TAG, extended_address); //city, state and zip code
+            Log.d(TAG, type); //ex. rodeo, concert, etc.
+
+            //CurrentEvents currentevent = new CurrentEvents(title, performers, address, extended_address, type);
+            CurrentEvents currentevent = new CurrentEvents(title, performers, address, extended_address, type, image);
+            currentevents[i] = currentevent;
+            titleArray[i] = currentevents[i].getTitle();
+        }
+
+        EventAdapter adapter = new EventAdapter(this, currentevents);
+        mlistView.setAdapter(adapter);
+
+
+
+
         String meta = funevents.getString("meta");
         Log.i(TAG, "From JSON: " + meta );
 
 
-        /*
-        //this is not going to work. venue is not a double, there are doubles in venue, such as the lat and lon or the id inside the venue array but it itself is not a double
-        JSONObject events = funevents.getJSONObject("events");
-        CurrentEvents currentEvents = new CurrentEvents();
-        currentEvents.setmVenue(events.getDouble("venue"));
-        currentEvents.setmTime(events.getString("time")); //says getLong in Treehouse instead of getString //no "m" in the setmTime in Treehouse videos for this line, the line above, and the lines below.
-        currentEvents.setmIcon(events.getString("icon"));
-        currentEvents.setmPrecipChance(events.getDouble("precipProbability"));
-        currentEvents.setmSummary(events.getString("summary"));
-        currentEvents.setmTemperature(events.getDouble("temperature"));*/
 
 
-        return new CurrentEvents();
+
     }
 
     private boolean isNetworkAvailable(){

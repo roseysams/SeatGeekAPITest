@@ -1,59 +1,45 @@
 package com.example.rsams4190.seatgeekapitest;
 
 
+import java.util.ArrayList;
+
 public class CurrentEvents {
-    private String mIcon; //displays the image/icon in the stormy app
-    private String mTime; //displays the time in the weather app example
-    private double mTemperature; //displays the temperature in the weather app example
-    private double mHumidity; //displays the humidity in the weather app example
-    private double mPrecipChance; //displays the chance of precipitation in the weather app example
-    private String mSummary; //displays the summary in the weather app example
 
-    public String getmIcon() {
-        return mIcon;
+    private String title;
+    //private ArrayList<String> performers = new ArrayList<>();
+    private String address;
+    private String extended_address;
+    private String type;
+    private String image;
+
+    public CurrentEvents(String title, ArrayList<String> performers, String address, String extended_address, String type, String image){
+
+        this.title = title;
+        //this.performers = performers;
+        this.address = address;
+        this.extended_address = extended_address;
+        this.type = type;
+        this.image = image;
+
     }
 
-    public void setmIcon(String mIcon) {
-        this.mIcon = mIcon;
+    public String getTitle() {
+        return title;
     }
 
-    public String getmTime() {
-        return mTime;
+    //public ArrayList<String> getPerformers() {return performers;}
+
+    public String getImage() {return image;}
+
+    public String getAddress() {
+        return address;
     }
 
-    public void setmTime(String mTime) {
-        this.mTime = mTime;
+    public String getExtended_address() {
+        return extended_address;
     }
 
-    public double getmTemperature() {
-        return mTemperature;
-    }
-
-    public void setmTemperature(double mTemperature) {
-        this.mTemperature = mTemperature;
-    }
-
-    public double getmHumidity() {
-        return mHumidity;
-    }
-
-    public void setmVenue(double mVenue) {
-        this.mHumidity = mVenue;
-    }
-
-    public double getmPrecipChance() {
-        return mPrecipChance;
-    }
-
-    public void setmPrecipChance(double mPrecipChance) {
-        this.mPrecipChance = mPrecipChance;
-    }
-
-    public String getmSummary() {
-        return mSummary;
-    }
-
-    public void setmSummary(String mSummary) {
-        this.mSummary = mSummary;
+    public String getType() {
+        return type;
     }
 }
