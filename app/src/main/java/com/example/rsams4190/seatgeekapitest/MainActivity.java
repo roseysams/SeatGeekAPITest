@@ -37,10 +37,13 @@ public class MainActivity extends AppCompatActivity {
         mlistView = (ListView) findViewById(R.id.list_view);
 
         String clientID = "OTY3NjUxOHwxNTEwOTU0MjA2LjE0";
-        //double latitude = 37.8267;
-        //double longitude = -122.432;
-        //String seatGeekUrl = "https://api.seatgeek.com/2/events?client_id=" + clientID + "/" + latitude + "," + longitude;
-        final String seatGeekUrl = "https://api.seatgeek.com/2/events?client_id=" + clientID;
+
+      //location issue
+        double lat = 45.5007;
+        double lon = -122.57;
+
+
+        final String seatGeekUrl = "https://api.seatgeek.com/2/events?client_id=" + clientID + "&geoip=true&lat=" + lat + "&lon=" + lon;
 
         if (isNetworkAvailable()) {
             OkHttpClient client = new OkHttpClient();
