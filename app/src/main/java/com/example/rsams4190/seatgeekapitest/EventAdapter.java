@@ -79,9 +79,11 @@ public class EventAdapter extends BaseAdapter {
 
 
         // 3
-        Log.d("Test",currentevent.getImage());
+        Log.d("Test -- dm",currentevent.getImage());
+        String url = currentevent.getImage();
+        //String url = "https://chairnerd.global.ssl.fastly.net/images/performers-landscape/new-york-knicks-17293d/2090/huge.jpg, https://chairnerd.global.ssl.fastly.net/images/performers-landscape/portland-trail-blazers-7fe3cc/2106/huge.jpg";
         //Picasso.with(mContext).load("https://chairnerd.global.ssl.fastly.net/images/performers-landscape/boris-b7d3a8/10411/huge.jpg").placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
-        Picasso.with(mContext).load(currentevent.getImage()).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+        Picasso.with(mContext).load(url).fit().centerCrop().placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(thumbnailImageView);
         //Picasso.with(mContext).load(String.valueOf(currentevent.getPerformers())).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
 
         return rowView;

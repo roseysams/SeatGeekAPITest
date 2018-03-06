@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
             String type = currenteventJSON.getString("type");
 
             String image = String.valueOf(performers);
-            //String image = currenteventJSON.getString("image");
 
 
             Log.d(TAG, title); //title of event
